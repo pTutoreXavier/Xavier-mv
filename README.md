@@ -1,23 +1,31 @@
 # Projet tutoré Xavier - LP CIASIE - IUT Nancy-Charlemagne
 Groupe : Mailard Louis, Toussaint Yvann, Costa Adrien, Guebel Marc
 
-Installation :
-  Prérequis :
-  
-    -Un serveur PHP
-    -Composer
-    
-  1) Clonner le projet dans un repertoire local de votre machine
-  2) A la racine du projet, ouvrir un terminal, 'composer install'
-  3) Ouvrir le dossier bootstrap, créer un dossier conf, dans le dossier conf, créer conf.ini pour la connection à la base de données sous la forme suivante :
-  
-    driver = [driverSql]
-    host = [adresse]
-    database = [votreBase]
-    username = [username]
-    password = [password]
-    charset = utf8
-    collation = utf8_general_ci
-    prefix = xv_
-    
-  4) Enjoy !
+### Pré-requis
+
+Avoir docker et docker-compose
+
+### Installation
+
+Après avoir récupérer le dépot Git, se placer à la racine, ouvrir un terminal et exécuter la commande: 
+```
+docker-compose up -d
+```
+Afficher les machines docker avec:
+```
+docker ps -a
+```
+Dans la machine xavier, exécuter:
+```
+composer install
+composer dump-autoload -o
+```
+
+Dans le fichier /etc/hosts de votre machine hôte ajouter:
+```
+127.0.0.1 xavier.local
+```
+
+## Utilisation
+
+L'application est accessible avec l'url: xavier.local (port 10080 par défaut)
