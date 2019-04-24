@@ -1,0 +1,14 @@
+{% extends "templates/app.twig" %}
+{% block content %}
+	<div class="row m-auto">
+		{% for format in formats %}
+			<div class="card m-auto mr-2 p-1" style="width: 18rem;">
+				<img class="h-50 w-50 m-auto" src="{{ base_url() }}/images/{{ format }}.png">
+				<h4>Exporter au format {{ format | upper }}</h4>
+				<div class="card-body">
+					<a class="btn btn-primary" href="{{ path_for('dictionary.format', {'format': format}) }}">Télécharger</a>
+				</div>
+			</div>
+		{% endfor %}	
+	</div>
+{% endblock %}

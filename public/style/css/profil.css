@@ -1,0 +1,131 @@
+@charset "UTF-8";
+/*
+$cols: dans une grille de x colonnes
+*/
+/*
+.col{
+	margin-left: $size_gutter;
+	margin-bottom: 5px;
+	box-sizing: border-box;
+}*/
+/* Début Profil */	
+.inputProfiltext {
+  box-sizing: border-box;
+  border: 1px solid gray;
+}
+
+.inputProfiltext:focus {
+  border-color: #133AAC;
+}
+
+.inputProfilSubmit[type=submit] {
+  cursor: pointer;
+  background-color: #133AAC;
+  color: white;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  transition: all 0.5s;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 18px;
+}
+
+.inputProfilSubmit[type=submit]:hover {
+  box-shadow: 0px 5px 5px gray;
+}
+
+#h2profil {
+  text-align: center;
+}
+
+#fieldsetMesInformations, #fieldsetInfoCompte {
+  width: 80.4%;
+  margin-left: 9.8%;
+  padding: 10px;
+  box-shadow: 10px 5px 5px gray;
+}
+
+#fieldsetMesInformations {
+  display: flex;
+}
+
+#pictureAvatar {
+  width: 23%;
+  margin-left: 1.6%;
+  text-align: center;
+}
+
+#divMesInformations {
+  width: 72.2%;
+  margin-left: 1.6%;
+}
+
+#imgAvatar {
+  max-width: 180px;
+  max-height: 180px;
+}
+
+#formUpdateMail, #formUpdatePass {
+  margin-top: 10%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  width: 57.44%;
+  margin-left: 21.28%;
+}
+#formUpdateMail span, #formUpdatePass span {
+  margin-top: 20px;
+}
+#formUpdateMail input[type=text], #formUpdateMail input[type=password], #formUpdatePass input[type=text], #formUpdatePass input[type=password] {
+  margin-top: 10px;
+  height: 25px;
+}
+#formUpdateMail input[type=submit], #formUpdatePass input[type=submit] {
+  margin: auto;
+  margin-top: 30px;
+}
+
+#formUpdatePicture [type=radio] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+#formUpdatePicture [type=radio] + img {
+  cursor: pointer;
+}
+
+#formUpdatePicture [type=radio]:checked + img {
+  outline: 2px solid #133AAC;
+}
+
+#formUpdatePicture {
+  width: 59.9%;
+  margin-left: 5.7%;
+  text-align: center;
+}
+
+#formUpdatePictureUpload {
+  width: 27.1%;
+  margin-left: 1.6%;
+  text-align: center;
+}
+
+#pageUpdateProfilPicture {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#titreUpdateProfil {
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+/* Fin Profil */
+
+/*# sourceMappingURL=profil.css.map */

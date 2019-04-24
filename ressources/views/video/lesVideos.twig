@@ -1,0 +1,125 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+chercher par le nom d'un chercheur :
+<input type="text" list="laListe" id="chercheur">
+<datalist id="laListe"></datalist>
+<input type="button" id="rechercher" value="rechercher">
+<input type="button" id="mesVideos" value="Mes vidéos">
+<input type="button" id="toutesLesVideos" value="Toutes les vidéos">
+<table class="table mt-5" id="lesVideos">
+	<thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nom de la vidéo</th>
+      <th scope="col">Vidéo</th>
+    </tr>
+  </thead>
+
+</table>
+{% endblock %}
+
+{% block jshead %}
+
+	<script type="text/javascript" src="{{ base_url() }}/jplayer/js/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			let base = $("#lesVideos").html();
+			loadVideos();
+
+			$("#toutesLesVideos").click(function(event){
+				loadVideos();
+				$("#toutesLesVideos").prop("disabled",true);
+				$("#mesVideos").prop("disabled",false);
+				$("#chercheur").val("");
+			})
+
+			$("#mesVideos").click(function(event){
+				$.ajax({
+			        url : '../getVideosSearcher', // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let video = JSON.parse(code_html);
+			       		let HTML = "";
+			       		let cpt = 0;
+			       		video.forEach(function(element){
+			       			HTML += "<tr><td>" + (cpt+1) + "</td><td> " + element.lien + "</td><td><a href='../video/" + element.id + "'>Voir la vidéo</a></td></tr>";
+			       			cpt++;
+			       		});
+			       		$("#lesVideos").html(base + HTML);
+			       		$("#mesVideos").prop("disabled",true);
+			       		$("#toutesLesVideos").prop("disabled",false);
+			       		$("#chercheur").val("");
+			        }
+			    });
+			});
+
+			$("#chercheur").keyup(function(event){
+				if($("#chercheur").val() != ""){
+					$.ajax({
+				        url : '../getSearcher/' + $("#chercheur").val(), // La ressource ciblée
+				        type : 'GET', // Le type de la requête HTTP.
+				        success : function(code_html, statut){
+				       		let video = JSON.parse(code_html);
+				       		let HTML = "";
+				       		video.forEach(function(element){
+				       			HTML += "<option value='" + element + "'>";
+				       		});
+				       		$("#laListe").html(HTML);
+				        }
+					});
+				}
+				
+			});
+
+			$("#rechercher").click(function(event){
+				$.ajax({
+			        url : '../VideosSearcher/' + $("#chercheur").val(), // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let video = JSON.parse(code_html);
+			       		let HTML = "";
+			       		let cpt = 0;
+
+			       		if(video != 0){
+			       			video.forEach(function(element){
+				       			console.log(element);
+				       			HTML += "<tr><td>" + (cpt+1) + "</td><td> " + element.lien + "</td><td><a href='../video/" + element.id + "'>Voir la vidéo</a></td></tr>";
+				       			cpt++;
+				       		});
+				       		$("#lesVideos").html(base + HTML);
+				       		$("#chercheur").val("");
+				       		$("#mesVideos").val("Mes vidéos");
+				       		$("#mesVideos").prop("disabled",false);
+				       		$("#toutesLesVideos").prop("disabled",false);
+			       		}	
+			       		else{
+			       			alert("ce chercheur n'existe pas");
+			       		}      		
+			        }
+				});
+			});
+
+			function loadVideos(){
+				$.ajax({
+			        url : '../getAllVideos', // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let video = JSON.parse(code_html);
+			       		console.log(video);
+			       		let cpt = 0;
+			       		let HTML = "";
+			       		video.forEach(function(element){
+			       			HTML += "<tr><td>" + (cpt+1) + "</td><td> " + element.lien + "</td><td><a href='../video/" + element.id + "'>Voir la vidéo</a></td></tr>";
+			       			cpt++;
+			       		});
+			       		$("#lesVideos").html(base + HTML);
+			        }
+				});
+			}
+		});
+	</script>
+
+{% endblock %}

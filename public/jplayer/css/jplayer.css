@@ -1,0 +1,76 @@
+.jp-controls{
+	margin-left: 200px;
+}
+
+#pseudo-code{
+	background-color: #e5e5e5;
+}
+
+#barre{
+	box-sizing: border-box;
+	width: 100%;
+	height: 8px;
+	border: 1px solid black;
+	position: relative
+}
+
+#timeLine{
+	position:absolute;
+	box-sizing: border-box;
+	width: 0%;
+	height: 8px;
+	background-color:blue;
+	z-index: 1;
+}
+
+#progressBar{
+	box-sizing: border-box;
+	width:100%;
+	height: 10px;
+	margin-left: -1px;
+	background-color:white;
+	border: solid #3399F7 1px;
+	position: relative
+}
+
+#indicator{
+	 width:0px;
+  	background-color:#3399F7;
+  	height:8px;
+  	position:absolute;
+	box-sizing: border-box;
+	z-index: 1;
+}
+
+.duree{
+	width: 100%;
+	box-sizing:border-box;
+}
+
+#jp-current-time{
+	width: 93%;
+	display: inline-block;
+}
+
+#jp-duration{
+	display: inline-block;
+	width: 4%;
+}
+
+#invisible{
+	visibility: hidden;
+}
+
+#bloc{
+	width:100%;
+	margin:auto;
+	display: flex;
+}
+
+
+
+.StartFinish{
+	width:80%;
+	margin:auto;
+	margin-top:10px;
+}

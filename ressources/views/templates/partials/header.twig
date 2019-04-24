@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="{{ path_for('home')}}">Xavier</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ path_for('home')}}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                {% if auth.check %}
+                <li class="nav-item"><a class="nav-link" href="{{ path_for('sequences') }}">Sequences</a></li>
+                {% endif %}
+                {% if auth.level is same as('user') %}
+                    <li><a class="nav-link" href="{{ path_for('commentaires') }}">Mes Commentaires</a></li>
+                {% elseif auth.level is same as('searcher')  %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path_for('videos') }}">Vidéos</a></li>
+                    <li><a class="nav-link" href="{{ path_for('dictionary') }}">Dictionnaire</a></li>
+                    <li><a class="nav-link" href="{{ path_for('upload') }}">Télécharger une vidéo</a></li>
+                {% elseif not auth.level %}
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+
+                {% if auth.check %}
+                        <li class="nav-item dropdown my-sm-0 my-lg-0">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ auth.user.nom }} {{ auth.user.prenom }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ path_for('profil') }}">Profil</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path_for('auth.signout') }}">Se déconnecter</a>
+                            </div>
+
+                {% else %}
+                    <li class="nav-item mr-sm-2"><a class="nav-link" href="{{ path_for('auth.signup') }}">s'inscrire</a></li>
+                    <li class="nav-item mr-sm-0"><a class="nav-link" href="{{ path_for('auth.signin') }}">se connecter</a></li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,78 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+	<div class="signup row">
+		<form action="{{ path_for('auth.signup') }}" method="post" autocomplete="off" class="col-md-6 offset-3">
+			<fieldset>
+				<legend><h1>Création de compte</h1></legend>
+					<div class="form-group card">
+						<div class="card-body">
+							<div class="form-group row">
+								<label class="col-6 col-form-label" for="nom">Nom</label>
+								<div class="col-6">
+									<input class="form-control" type="text" name="nom" id="nom" value="{{ old.nom }}" required>
+									{% if errors.nom %}
+										<span class="erreur">{{ errors.nom | first }}</span>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-6 col-form-label" for="prenom">Prénom</label>
+								<div class="col-6">
+									<input class="form-control" type="text" name="prenom" id="prenom" value="{{ old.prenom }}" required>
+									{% if errors.prenom %}
+										<span class="erreur">{{ errors.prenom | first }}</span>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label class="col-6 col-form-label" for="naissance">Date de naissance</label>
+								<div class="col-6">
+									<input class="form-control" type="date" name="naissance" id="naissance" value="{{ old.naissance }}" required>
+									{% if errors.naissance %}
+										<span class="erreur">{{ errors.naissance | first }}</span>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label class="col-6 col-form-label" for="mail">Mail</label>
+								<div class="col-6">
+									<input class="form-control" type="mail" name="mail" id="mail" value="{{ old.mail }}" required>
+									{% if errors.mail %}
+										<span class="erreur">{{ errors.mail | first }}</span>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label class="col-6 col-form-label" for="mdp">Mot de passe</label>
+								<div class="col-6">
+									<input class="form-control" type="password" name="mdp" id="mdp" required>
+									{% if errors.mdp %}
+										<span class="erreur">{{ errors.mdp | first }}</span>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label class="col-6 col-form-label" for="mdpConf">Confirmation mot de passe</label>
+								<div class="col-6">
+									<input class="form-control" type="password" name="mdpConf" id="mdpConf" required>
+									{% if errors.mdpConf %}
+										<span class="erreur">Le mot de passe doit être identique</span>
+									{% endif %}
+								</div>
+							</div>
+							<input type="submit" value="Créer" class="btn btn-primary float-right btn-lg">
+						</div>
+
+					</div>
+
+
+			</fieldset>
+
+			{{ csrf.field | raw }}
+		</form>
+	</div>
+{% endblock %}

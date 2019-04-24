@@ -1,0 +1,24 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+<div class="upload-btn-wrapper">
+  <button class="btn"></button>
+  <input type="file" name="myfile" />
+</div>
+
+{% endblock %}
+
+{% block jshead %}
+
+	<script type="text/javascript" src="{{ base_url() }}/jplayer/js/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		
+		$("#image").click(function(event){
+			console.log("ok");
+		});
+
+	</script>
+
+{% endblock %}

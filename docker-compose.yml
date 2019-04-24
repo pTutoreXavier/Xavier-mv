@@ -1,0 +1,51 @@
+# docker-compose file pour le déploiement initial de l'application lbs
+# Documentation complète : https://bitbucket.org/canals5/docker-things
+
+version: "3"
+
+networks:
+  xavier_network:
+    driver: bridge
+
+services:
+  api.player:
+    image: canals/php:latest
+    environment:
+      - VHOST_HOSTNAME=xavier.local
+      - VHOST_DOCROOT=/var/www/xavier
+      #- http_proxy=http://www-cache.iutnc.univ-lorraine.fr:3128/
+      #- https_proxy=http://www-cache.iutnc.univ-lorraine.fr:3128/
+    ports:
+      - "10080:80"
+      - "10443:443"
+    volumes:
+      - ./:/var/www/xavier
+    working_dir: /var/www/xavier
+    networks:
+      - xavier_network
+    links:
+      - mysql:db
+  
+#############################
+# mysql + adminer
+#############################
+  mysql:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=passwordRoot
+      - MYSQL_USER=xavier
+      - MYSQL_PASSWORD=xavier
+      - MYSQL_DATABASE=xavier
+    ports:
+      - "3603:3306"
+    networks:
+      - xavier_network
+
+  adminer:
+     image: adminer
+     ports:
+       - "8080:8080"
+     networks:
+       - xavier_network
+     links:
+       - mysql:db

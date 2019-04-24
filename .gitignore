@@ -1,0 +1,8 @@
+/vendor/
+/logs/*
+!/logs/README.md
+/.idea
+composer.json
+composer.lock
+
+jquery-3\.3\.1\.min\.js

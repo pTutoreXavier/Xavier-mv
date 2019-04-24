@@ -1,0 +1,99 @@
+@import "_grille"
+$primary-color: #133AAC
+
+/* Début Profil */	
+
+.inputProfiltext
+	box-sizing : border-box
+	border : 1px solid gray
+
+.inputProfiltext:focus
+	border-color : $primary-color
+
+.inputProfilSubmit[type="submit"]
+	cursor : pointer
+	background-color : $primary-color
+	color : white
+	width : 150px
+	height : 40px
+	border-radius : 5px
+	transition : all 0.5s
+	text-transform: uppercase
+	font-weight : bold
+	letter-spacing : 2px
+	font-size : 18px
+
+.inputProfilSubmit[type="submit"]:hover
+	box-shadow : 0px 5px 5px gray
+
+
+#h2profil
+	text-align : center
+
+
+#fieldsetMesInformations, #fieldsetInfoCompte
+	@include grille(12, 1.6%, 1, 10)
+	padding : 10px
+	box-shadow : 10px 5px 5px gray
+
+#fieldsetMesInformations
+		display : flex
+		//height : 220px
+
+#pictureAvatar
+	@include grille(4, 1.6%, 0, 1)
+	text-align : center
+
+#divMesInformations
+	@include grille(4, 1.6%, 0, 3)
+
+#imgAvatar
+	max-width : 180px
+	max-height : 180px
+
+#formUpdateMail, #formUpdatePass
+	margin-top : 10%
+	text-align : center
+	display : flex
+	flex-direction : column
+	@include grille(10, 1.6%, 2, 6)
+	span
+		margin-top : 20px
+	input[type="text"], input[type='password']
+		margin-top : 10px
+		height : 25px
+	input[type="submit"]
+		margin : auto
+		margin-top : 30px
+
+#formUpdatePicture [type=radio] 
+	position: absolute
+	opacity: 0
+	width: 0
+	height: 0
+
+#formUpdatePicture [type=radio] + img 
+	cursor: pointer
+
+#formUpdatePicture [type=radio]:checked + img 
+	outline: 2px solid $primary-color
+
+#formUpdatePicture
+	@include grille(24, 1.6%, 1, 15)
+	text-align : center
+
+#formUpdatePictureUpload
+	@include grille(24, 1.6%, 0, 7)
+	text-align : center
+
+#pageUpdateProfilPicture
+	display : flex
+	flex-direction : row
+	flex-wrap : wrap
+
+#titreUpdateProfil
+	width : 100%
+	margin-top : 30px
+	margin-bottom : 40px
+
+/* Fin Profil */

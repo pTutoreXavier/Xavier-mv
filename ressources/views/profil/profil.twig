@@ -1,0 +1,33 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+<h2 id="h2profil">Mon compte</h2>
+<fieldset id="fieldsetMesInformations">
+	<legend>Mes informations</legend>
+	<div id="pictureAvatar">
+		<img id="imgAvatar" src="../../public/images/avatar/{{avatar}}">
+		<a href="{{ path_for('updateProfilPicture') }}">Modifier</a>
+	</div>
+	<div id="divMesInformations">
+		Nom : {{ nom }}<br />
+		Prenom : {{ prenom }}<br />
+		Date de naissance : {{ dateNaissance }}<br />
+		Mail : {{ mail }}<br /><br />
+		<a href="{{ path_for('updateMail') }}">Modifier Adresse email</a><br />
+		<a href="{{ path_for('updatePass') }}">Modifier mot de passe</a><br />
+	</div>
+	
+
+</fieldset><br /><br />
+<fieldset id="fieldsetInfoCompte">
+	<legend>Informations du compte</legend>
+	Type de compte : 
+	{%if level == 500%}
+		user
+	{%elseif level == 779%}
+		Chercheur
+	{%endif%}<br />
+	Date d'inscription : {{ created_at }}
+</fieldset>
+
+	
+{% endblock %}

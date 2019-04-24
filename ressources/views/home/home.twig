@@ -1,0 +1,23 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+
+<img src="./images/banniere.png" id="imgBaniere">
+<h2 id="h2Accueil"> Dernières séquences : </h2>
+<div id="lastSequence">
+	{% for sequence in lastSequence %}
+
+		<a href="sequence/{{sequence.idVideo}}/{{sequence.id}}" class="miniaVideo">
+			<img src="{{ base_url() }}/images/miniatures/{{sequence.miniature}}" class="img-reponsive imgMinia">
+			<div class="bottom-right">{{sequence.fin-sequence.debut}}s</div>
+		</a>
+	{% endfor %}
+</div>
+
+
+{% if auth.level is same as('user') %}
+	<div id="btnComm">
+		<a class="btn btn-primary" href="commentaires" role="button">Consulter vos commentaires</a>
+	</div>
+{% endif %}
+
+{% endblock content %}

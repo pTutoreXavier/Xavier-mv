@@ -1,0 +1,27 @@
+{% extends "templates/app.twig" %}
+
+{% block jshead %}
+	<script type="text/javascript" src='{{ base_url() }}/scripts/jquery-3.3.1.js'></script>
+	<script type="text/javascript" src="{{ base_url() }}/d3-wordcloud/lib/d3/d3.js"></script>
+	<script type="text/javascript" src="{{ base_url() }}/d3-wordcloud/lib/d3/d3.layout.cloud.js"></script>
+	<script type="text/javascript" src="{{ base_url() }}/d3-wordcloud/d3.wordcloud.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div id='wordcloud'></div>
+<script>
+  d3.wordcloud()
+    .size([800, 400])
+    .selector('#wordcloud')
+    .words([
+    	{% for element in elements %}
+    		{text: "{{ element.libelle }}", size: "{{ element.count }}" + 1 },
+    	{% endfor %}
+    ])
+    .onwordclick(function(d, i) {
+	  	window.location = "{{ base_url() }}" + "/dictionary/" + d.text + "/id";
+	})
+    .start();
+</script>
+{% endblock %}

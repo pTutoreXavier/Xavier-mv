@@ -1,0 +1,43 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+<div id="pageUpdateProfilPicture">
+	<h2 id="titreUpdateProfil">Mettre à jour votre photo de profil</h2>
+	<fieldset id="formUpdatePicture">
+	<form method="POST" action="{{ path_for('checkProfilPicture') }}" >
+		<h2>Choisir un avatar</h2>
+		<label><input type="radio" name="profilPicture" value="0"><img id="imgAvatar" src="../../../public/images/avatar/0.png"></label>
+		<label><input type="radio" name="profilPicture" value="1"><img id="imgAvatar" src="../../../public/images/avatar/1.png"></label>
+		<label><input type="radio" name="profilPicture" value="2"><img id="imgAvatar" src="../../../public/images/avatar/2.png"></label>
+		<label><input type="radio" name="profilPicture" value="3"><img id="imgAvatar" src="../../../public/images/avatar/3.png"></label>
+		<label><input type="radio" name="profilPicture" value="4"><img id="imgAvatar" src="../../../public/images/avatar/4.png"></label>
+		<label><input type="radio" name="profilPicture" value="5"><img id="imgAvatar" src="../../../public/images/avatar/5.png"></label>
+		<label><input type="radio" name="profilPicture" value="6"><img id="imgAvatar" src="../../../public/images/avatar/6.png"></label>
+		<label><input type="radio" name="profilPicture" value="7"><img id="imgAvatar" src="../../../public/images/avatar/7.png"></label>
+		<label><input type="radio" name="profilPicture" value="8"><img id="imgAvatar" src="../../../public/images/avatar/8.png"></label>
+		<label><input type="radio" name="profilPicture" value="9"><img id="imgAvatar" src="../../../public/images/avatar/9.png"></label>
+		<label><input type="radio" name="profilPicture" value="10"><img id="imgAvatar" src="../../../public/images/avatar/10.png"></label>
+		<label><input type="radio" name="profilPicture" value="11"><img id="imgAvatar" src="../../../public/images/avatar/11.png"></label>
+		<label><input type="radio" name="profilPicture" value="12"><img id="imgAvatar" src="../../../public/images/avatar/12.png"></label>
+		<label><input type="radio" name="profilPicture" value="13"><img id="imgAvatar" src="../../../public/images/avatar/13.png"></label>
+		<label><input type="radio" name="profilPicture" value="14"><img id="imgAvatar" src="../../../public/images/avatar/14.png"></label>
+		<label><input type="radio" name="profilPicture" value="15"><img id="imgAvatar" src="../../../public/images/avatar/1.png"></label>
+		<label><input type="radio" name="profilPicture" value="16"><img id="imgAvatar" src="../../../public/images/avatar/16.png"></label>
+		<label><input type="radio" name="profilPicture" value="17"><img id="imgAvatar" src="../../../public/images/avatar/17.png"></label>
+		<label><input type="radio" name="profilPicture" value="18"><img id="imgAvatar" src="../../../public/images/avatar/18.png"></label><br /><br />
+		<input class="inputProfilSubmit" type="submit" value="Valider" style="margin-bottom: 20px;">
+	</form>
+	</fieldset>
+	<fieldset id="formUpdatePictureUpload">
+	<form method="POST" action="{{ path_for('checkProfilPictureUpload') }}" enctype="multipart/form-data">
+		<h2>Choisir une photo</h2><br />
+		<input type="file" name="picture" required/><br /><br />
+		<input class="inputProfilSubmit" type="submit" value="Valider">
+
+		{{ csrf.field | raw }}
+
+		
+	</form>
+	</fieldset>
+</div>
+
+{% endblock %}

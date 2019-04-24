@@ -1,0 +1,11 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+<form method="POST" action="{{ path_for('checkPass') }}" id="formUpdatePass">
+	<h2>Changement de mot de passe</h2>
+	<span>Mot de passe actuel : </span><input class="inputProfiltext" type="password" id="currentPass" name="currentPass" required="required">
+	<span>Nouveau mot de passe : </span><input class="inputProfiltext" type="password" id="newPass" name="newPass" required="required">
+	<span>Confirmer le mot de passe : </span><input class="inputProfiltext" type="password" id="newPass2" name="newPass2" required="required">
+	<input class="inputProfilSubmit" type="submit" name='valide' value="valider">
+</form>
+
+{% endblock %}

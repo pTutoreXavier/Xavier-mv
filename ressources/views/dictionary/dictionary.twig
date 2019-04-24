@@ -1,0 +1,87 @@
+{% extends "templates/app.twig" %}
+{% block jshead %}
+<script type="text/javascript" src='{{ base_url() }}/scripts/jquery-3.3.1.js'></script>
+{% endblock %}
+{% block content %}
+<nav class="nav">
+  	<a class="text-decoration-none mr-4" href="{{ path_for('dictionary.new') }}?type=objet">Ajouter un objet</a>
+	<a class="text-decoration-none mr-4" href="{{ path_for('dictionary.new') }}?type=method">Ajouter une fonction</a>
+	<a class="text-decoration-none mr-4" href="{{ path_for('dictionary.nuage') }}">Dictionnaire (Nuage)</a>
+	<a class="text-decoration-none" href="{{ path_for('dictionary.export') }}">Exporter le dictionnaire</a>
+</nav>
+<div class="row mt-5">
+	{% for key, value in elements %}
+		<table border="1" id="{{ loop.first ? 'table_objets' : 'table_fonctions' }}" class="display">
+			<thead>
+				<th class="w-90">{{ key }}</th>
+				<th class="no-sort">Actions</th>
+			</thead>
+			<tbody>
+				{% for data in value %}
+					<tr>
+						<td>
+							<a class="text-decoration-none" href="{{ path_for('dictionary.details', {'id': data.id}) }}">{{ data.libelle }}</a>
+						</td>
+						<td class="text-center">
+							<div>
+								<a href="{{ path_for('dictionary.details', {'id': data.id}) }}?action=edit"><i class="fas fa-pen"></i></a>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endfor %}
+</div>
+<script type="text/javascript">
+	let language = {
+		"sProcessing": "Traitement en cours...",
+		"sSearch": "Rechercher&nbsp;:",
+	    "sLengthMenu": "Afficher _MENU_ &eacute;l&eacute;ments",
+		"sInfo": "Affichage de l'&eacute;l&eacute;ment _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+		"sInfoEmpty": "Affichage de l'&eacute;l&eacute;ment 0 &agrave; 0 sur 0 &eacute;l&eacute;ment",
+		"sInfoFiltered": "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+		"sInfoPostFix": "",
+		"sLoadingRecords": "Chargement en cours...",
+	    "sZeroRecords": "Aucun &eacute;l&eacute;ment &agrave; afficher",
+		"sEmptyTable": "Aucune donn&eacute;e disponible dans le tableau",
+		"oPaginate": {
+			"sFirst": "Premier",
+			"sPrevious": "Pr&eacute;c&eacute;dent",
+			"sNext": "Suivant",
+			"sLast": "Dernier"
+		},
+		"oAria": {
+			"sSortAscending": ": activer pour trier la colonne par ordre croissant",
+			"sSortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+		},
+		"select": {
+	        "rows": {
+	        	_: "%d lignes séléctionnées",
+	        	0: "Aucune ligne séléctionnée",
+	        	1: "1 ligne séléctionnée"
+	        }  
+		}
+	};
+	$(document).ready( function () {
+	    $('#table_objets').dataTable({
+	    	"language": language,
+	    	"columnDefs": [{
+		        "targets": 'no-sort',
+		        "orderable": false,
+		    }]
+	   	});
+	    $("#table_objets_wrapper").addClass("col-12 mb-5");
+	});
+	$(document).ready( function () {
+	    $('#table_fonctions').dataTable({
+	    	"language": language,
+	    	"columnDefs": [{
+		        "targets": 'no-sort',
+		        "orderable": false,
+		    }]
+	   	});
+	    $("#table_fonctions_wrapper").addClass("col-12");
+	});
+</script>
+{% endblock %}

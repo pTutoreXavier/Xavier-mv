@@ -1,0 +1,119 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+{% if auth.level is same as('user') %}
+		<h2 class="text-center" style="margin-bottom: -40px;">Les séquences : </h2><br />
+	<div id="user" style="display: flex; flex-wrap: wrap">
+	</div>
+{% elseif auth.level is same as('searcher')  %}
+	<div id="searcher">
+		Recherche par pseudocode : 
+		<input type="text" id="recherche">
+		<table class="table mt-5" id="lesSequences">
+			<thead class="thead-dark">
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">pseudoCode</th>
+			      <th scope="col">Vidéo</th>
+			    </tr>
+		    </thead>
+
+		</table>
+	</div>
+{% endif %}
+
+{% endblock %}
+
+{% block jshead %}
+
+	<script type="text/javascript" src="{{ base_url() }}/jplayer/js/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			let base = $("#lesSequences").html();
+			if($("#searcher").html() == null){
+				$.ajax({
+			        url : '../random', // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let sequences = JSON.parse(code_html);
+			       		let HTML = "";
+			       		sequences.forEach(function(element){
+			       			var newA = document.createElement("a");
+			       			newA.setAttribute("href","../sequence/" + element.idVideo + "/" + element.id);
+			       			newA.setAttribute("class","miniaVideo col-lg-4 col-md-6 col-sm-12 col-xs-12");
+			       			newA.setAttribute("style","margin-top: 50px;");
+			       			var newImg = document.createElement("img");
+			       			newImg.setAttribute("src","{{ base_url() }}/images/miniatures/" + element.miniature);
+			       			newImg.setAttribute("class","img-reponsive imgMinia");
+			       			var newDiv = document.createElement("div");
+			       			newDiv.setAttribute("style","position: absolute; right: 30px; bottom: 10px;");
+			       			newDiv.textContent = element.fin - element.debut + 's';
+
+			       			newA.appendChild(newImg);
+			       			newA.appendChild(newDiv);
+
+			       			document.getElementById("user").appendChild(newA);
+			       		});
+			        }
+			    });
+			}
+			else{
+				takeAllSequence();
+				$("#recherche").keyup(function(event){
+					if($("#recherche").val() != ""){
+						$.ajax({
+					        url : '../pseudoCode/' + $("#recherche").val(), // La ressource ciblée
+					        type : 'GET', // Le type de la requête HTTP.
+					        success : function(code_html, statut){
+					       		let sequences = JSON.parse(code_html);
+					       		let HTML = "";
+					       		let cpt = 0;
+
+					       		sequences.forEach(function(element){
+					       			let pseudocode = element.pseudocode.split(";");
+					       			HTML += "<tr><td>" + (cpt+1) + "</td><td> " + pseudocode[0] + "." + pseudocode[1] + "(";
+					       			if(pseudocode[2]){
+					       				HTML += pseudocode[2];
+					       			}
+					       			HTML += ") </td><td><a href='../video/" + element.idVideo + "'> Voir la séquence</a></td></tr>";
+					       			cpt++;
+					       		});
+					       		$("#lesSequences").html(base + HTML);
+					        }
+					    });
+					}
+					else{
+						takeAllSequence();
+					}
+				});
+			}
+
+			function takeAllSequence(){
+				$.ajax({
+			        url : '../allSequence', // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let sequences = JSON.parse(code_html);
+			       		let HTML = "";
+			       		let cpt = 0;
+			       		sequences.forEach(function(element){
+			       			let pseudocode = element.pseudocode.split(";");
+			       			HTML += "<tr><td>" + (cpt+1) + "</td><td> " + pseudocode[0] + "." + pseudocode[1] + "(";
+					       	if(pseudocode[2]){
+					       		HTML += pseudocode[2];
+					       	}
+					       	HTML += ") </td><td><a href='../video/" + element.idVideo + "'> Voir la séquence</a></td></tr>";
+			       			cpt++;
+			       		});
+			       		$("#lesSequences").html(base + HTML);
+			        }
+				});
+			}
+		});
+
+
+	</script>
+
+{% endblock %}

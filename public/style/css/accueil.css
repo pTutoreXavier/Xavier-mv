@@ -1,0 +1,36 @@
+#imgBaniere {
+  width: inherit;
+}
+
+.miniaVideo {
+  display: table-cell;
+  text-align: center;
+  position: relative;
+  text-align: center;
+}
+
+#lastSequence {
+  display: table;
+}
+
+.imgMinia {
+  width: 98%;
+}
+
+#h2Accueil {
+  margin-top: 50px;
+  text-align: center;
+}
+
+#btnComm {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+}
+
+/*# sourceMappingURL=accueil.css.map */

@@ -1,0 +1,654 @@
+{% extends 'templates/app.twig' %}
+
+{% block stylesheets %}
+	<link type="text/css" rel="stylesheet" href="{{ base_url() }}/jplayer/skin/css/blue.monday/css/jplayer.blue.monday.css">
+	<link type="text/css" rel="stylesheet" href="{{ base_url() }}/jplayer/css/jplayer.css">
+{% endblock %}
+
+{% block jshead %}
+
+	<script type="text/javascript" src="{{ base_url() }}/jplayer/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ base_url() }}/jplayer/js/jquery.jplayer.min.js"></script>
+
+  	<script type="text/javascript">
+  		$(document).ready(function(){
+
+///////////////////////////////Suprresion du menu clique gauche////////////////////////////////////////////////
+
+  			$(document).on('contextmenu', 'div', function(e)   
+		    {
+		        e.preventDefault();
+		        return false;
+		    });
+
+///////////////////////////////Récupération des scéances de la vidéo de la base ////////////////////////////////////////////////
+	
+			var seqStart = [];
+  			var seqFinish = [];
+
+		    {% for sequence in lesSequences %}
+		    	seqStart.push("{{sequence.debut}}");
+		    	seqFinish.push("{{sequence.fin}}");
+		    {% endfor %}
+
+///////////////////////////////initialisation de la vidéo////////////////////////////////////////////////
+
+     	$("#jquery_jplayer_1").jPlayer({
+			ready: function () {
+				$(this).jPlayer("setMedia", {
+					title: "{{video.lien}}",  //titre de la video
+					m4v: "{{ base_url() }}/video/{{video.lien}}.mp4",		//lien de la video (complete)
+					//poster: "http://www.jplayer.org/video/poster/Big_Buck_Bunny_Trailer_480x270.png"  //miniature
+				});
+			},
+			swfPath: "{{ base_url() }}/jplayer/js/",  //emplacement jplayer
+			supplied: "m4v",
+			size: {
+				width: "640px", //largeur de la fenetre video
+				height: "360px",  //longueur de la fenetre video
+				cssClass: "jp-video-360p"  //qualité vidéo
+			},
+			useStateClassSkin: true,
+			autoBlur: false,
+			smoothPlayBar: true,
+			keyEnabled: true,
+			remainingDuration: true,
+			toggleDuration: true,
+		});
+
+///////////////////////////////envoie du formulaire////////////////////////////////////////////////
+
+     	$(".sequence").click(function(event){
+
+     		if($("#timeStart").val() != "" && $("#timeFinish").val() != "" && $("objet").val() != "" && $("#method").val() != ""){
+     			if (confirm("Etes vous sur de votre paramètre ?")){
+     				$.ajax({
+				        url : '../inObjet/' + $("#objet").val(), // La ressource ciblée
+				        type : 'GET', // Le type de la requête HTTP.
+				        success : function(code_html, statut){
+				       		let objet = JSON.parse(code_html);
+				       		console.log(objet);
+				       		if(objet == 1){
+				       			$.ajax({
+							        url : '../inMethod/' + $("#method").val(), // La ressource ciblée
+							        type : 'GET', // Le type de la requête HTTP.
+							        success : function(code_html, statut){
+							       		let method = JSON.parse(code_html);
+							       		console.log(method);
+							       		if(method == 1){
+							       			if(paramObjet == 2){
+							       				$.ajax({
+											        url : '../inObjet/' + $("#parametre").val(), // La ressource ciblée
+											        type : 'GET', // Le type de la requête HTTP.
+											        success : function(code_html, statut){
+											       		let objet = JSON.parse(code_html);
+											       		if(objet == 1){
+											       			$("#timeStart").prop("disabled",false);
+										     				$("#timeFinish").prop("disabled",false);
+										     				$("#timeStart").val(calculSeconde($("#timeStart").val().split(":")));
+										     				$("#timeFinish").val(calculSeconde($("#timeFinish").val().split(":")));
+										     				var canvas = document.getElementById("canvas");
+			                								var dataURL = canvas.toDataURL("image/png");
+			                								$.ajax({
+														        url : '../image', // La ressource ciblée
+														        type : 'POST', // Le type de la requête HTTP.
+														        data : 'image=' + dataURL,
+														        success : function(code_html, statut){
+														       		console.log(JSON.parse(code_html));
+														       		$("#miniature").val(JSON.parse(code_html))
+														       		document.getElementById("leForm").submit();
+														        }
+															});
+											       		}
+											       		else{
+											       			alert("votre paramètre n'est pas correct");
+											       		}
+											        }
+												});
+							       			}
+							       			else{
+							       				$("#timeStart").prop("disabled",false);
+							     				$("#timeFinish").prop("disabled",false);
+							     				$("#timeStart").val(calculSeconde($("#timeStart").val().split(":")));
+							     				$("#timeFinish").val(calculSeconde($("#timeFinish").val().split(":")));
+							     				
+							     				var canvas = document.getElementById("canvas");
+                								var dataURL = canvas.toDataURL("image/png");
+                								$.ajax({
+											        url : '../image', // La ressource ciblée
+											        type : 'POST', // Le type de la requête HTTP.
+											        data : 'image=' + dataURL,
+											        success : function(code_html, statut){
+											       		console.log(JSON.parse(code_html));
+											       		$("#miniature").val(JSON.parse(code_html))
+											       		document.getElementById("leForm").submit();
+											        }
+												});
+							       			}
+							       		}
+							       		else{
+							       			alert("la méthode n'est pas bonne");
+							       		}
+							        }
+								});
+				       		}
+				       		else{
+				       			alert("l'objet n'est pas bon");
+				       		}
+				        }
+					});
+		        }
+     		}
+     		else{
+     			alert("tous les champs ne sont pas remplis");
+     		}   	
+     	});
+
+///////////////////////////////Variables/////////////////////////////////////////////////////////////
+     	var repeat = false;
+     	var debut = 0;
+     	var fin;
+     	var play = false;  // savoir si la vidéo est en cours ou non
+     	var max; // (fin video - debut video)
+     	var jp = $('#jquery_jplayer_1'), jpData = jp.data('jPlayer');
+     	var first = true;
+     	let pourcent = 0;
+     	var paramObjet = 0;
+		
+		var canvas = document.querySelector('canvas');
+		// Get a handle on the 2d context of the canvas element
+		var context = canvas.getContext('2d');
+		// Define some vars required later
+		var w, h;
+     	
+		
+		// Takes a snapshot of the video
+		function snap() {
+			var video = document.querySelector('#jp_video_0');
+			// Define the size of the rectangle that will be filled (basically the entire element)
+			context.fillRect(0, 0, w, h);
+			// Grab the image from the video
+			context.drawImage(video, 0, 0, w, h);
+		}
+
+///////////////////////////////click début et fin//////////////////////////////////////////////////////
+
+		$("#start").click(function(event){
+			$("#timeStart").val(calculFormatTime(Math.round(jpData.status.currentTime)));
+			verifTime();
+			affichageSelect();
+		});
+
+		$("#finish").click(function(event){
+			$("#timeFinish").val(calculFormatTime(Math.round(jpData.status.currentTime)));
+
+			verifTime();
+			affichageSelect();
+		});
+
+		function affichageSelect(){
+			if($("#timeStart").val() != "" && $("#timeFinish").val() != ""){
+				let width = (calculSeconde($("#timeFinish").val().split(":")) - calculSeconde($("#timeStart").val().split(":"))) / pourcent;
+
+				let marginleft = (calculSeconde($("#timeStart").val().split(":")) / pourcent) - (80 / (640 / 100));
+
+				$("#selection").css("width",width + "%");
+				$("#selection").css("margin-left",marginleft + "%");
+			}
+			
+		}
+
+		function verifTime(){
+			if($("#timeStart").val() != "" && $("#timeFinish").val() != ""){
+				let start = calculSeconde($("#timeStart").val().split(":"));
+				let finish = calculSeconde($("#timeFinish").val().split(":"))
+				if(start > finish){
+					let tempo = $("#timeStart").val();
+					$("#timeStart").val($("#timeFinish").val());
+					$("#timeFinish").val(tempo);
+				}
+			}
+		}
+
+///////////////////////////////Suggestion pseudocode///////////////////////////////////////////////////////////////////////
+
+		$("#objet").keyup(function(event){
+			if($("#objet").val() != ""){
+				$.ajax({
+			        url : '../objet/' + $("#objet").val(), // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let video = JSON.parse(code_html);
+			       		let HTML = "";
+			       		video.forEach(function(element){
+			       			HTML += "<option value='" + element + "'>";
+			       		});
+			       		$("#lesObjets").html(HTML);
+			        }
+				});
+			}			
+		});
+
+		$("#method").keyup(function(event){
+			if($("#method").val() != ""){
+				$.ajax({
+			        url : '../method/' + $("#method").val(), // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let video = JSON.parse(code_html);
+			       		let HTML = "";
+			       		video.forEach(function(element){
+			       			HTML += "<option value='" + element + "'>";
+			       		});
+			       		$("#lesMethods").html(HTML);
+			        }
+				});
+				$.ajax({
+			        url : '../methodParam/' + $("#method").val(), // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let param = JSON.parse(code_html);
+			       		let HTML = "";
+			       		paramObjet = param;
+			       		console.log(param);
+			       		if(param < 1){
+			       			$("#parametre").prop("disabled",true);
+			       			$("#parametre").val("");
+			       		}
+			       		else{
+			       			$("#parametre").prop("disabled",false);
+			       		}
+			        }
+				});
+			}
+			else{
+				$("#parametre").prop("disabled",true);
+			}
+		});
+
+		$("#parametre").keyup(function(event){
+			if($("#parametre").val() != "" && paramObjet == 2){
+				$.ajax({
+			        url : '../objet/' + $("#parametre").val(), // La ressource ciblée
+			        type : 'GET', // Le type de la requête HTTP.
+			        success : function(code_html, statut){
+			       		let video = JSON.parse(code_html);
+			       		let HTML = "";
+			       		video.forEach(function(element){
+			       			HTML += "<option value='" + element + "'>";
+			       		});
+			       		$("#lesParams").html(HTML);
+			        }
+				});
+			}
+		});
+
+///////////////////////////////affichage des séquences crée sur la timeline////////////////////////////////////////////////
+
+     	function afficherIndisponible(seconde){
+     		let duree = seconde;
+
+     		pourcent = duree / 100;
+     		let HTML = '<div id="indicator"></div><div id="selection" style="height:8px;background-color:green;display:inline-block;z-index:4;position:absolute;opacity:0.6;"></div>';
+     		for (var i = 0; i < seqStart.length; i++) {
+     			let width = (seqFinish[i] - seqStart[i]) / pourcent;
+     			let margin = (seqStart[i] / pourcent) - (80 / (640 / 100));
+     			HTML += "<div style='width:"+width+"%; margin-left:"+margin+"%;height:8px;background-color:red;opacity:0.8;display:inline-block;z-index:3;position:absolute'></div>";
+     		}
+     		$("#progressBar").html(HTML);
+     	}
+
+///////////////////////////////retourne un total en seconde////////////////////////////////////////////////
+
+     	function calculSeconde(tempo){
+
+     		for(var i = 0; i < tempo.length; i++) {
+	    		tempo[i] = Math.abs(parseInt(tempo[i]));
+	    	}
+	    	if(tempo.length == 2){
+	    		let temp = tempo[0];
+	    		tempo[0] = tempo[1];
+	    		tempo[1] = temp;
+	    	}
+	    	else if(tempo.length ==3){
+	    		let temp = tempo[0];
+	    		tempo[0] = tempo[2];
+	    		tempo[2] = temp;
+	    	}
+	    	let total = 0;
+	    	for(var i = 0; i < tempo.length; i++){
+	    		total += tempo[i] * Math.pow(60, i);
+	    	}
+     		return total;
+     	}
+
+///////////////////////////////retourne un temps en format time////////////////////////////////////////////////
+
+     	function calculFormatTime(nombre){
+     		let reste=nombre;
+			let total='';
+
+     		let nbHours=Math.floor(reste/3600);
+			reste -= nbHours*3600;
+ 
+			let nbMinutes=Math.floor(reste/60);
+			reste -= nbMinutes*60;
+ 
+			let nbSeconds=reste;
+
+			if (nbHours>0){
+				total += nbHours + ":";
+			}
+ 
+			if (nbMinutes>0){
+				total += nbMinutes + ":";
+			}
+			else{
+				total += "0:";
+			}
+			if(nbSeconds < 10){
+				total += "0" + nbSeconds;
+			}
+			else{
+				total += nbSeconds;
+			}
+
+     		return total;
+     	}
+
+///////////////////////////////lance la vidéo////////////////////////////////////////////////
+
+    	$(".jp-play").click( function(event) {  //clique sur le bouton play
+    		var tempo = $(".jp-duration").html().split(':');
+    		
+	    	let total = calculSeconde(tempo);
+
+	    	
+
+	    	if(first){    		
+	    		fin = total;
+				max = (fin - debut);
+				first = false;
+				afficherIndisponible(total);
+				$("#start").prop("disabled",false);
+				$("#finish").prop("disabled",false);
+	    	}
+       	
+			
+	    	if(jpData.status.currentTime !== undefined){
+	    		if(jpData.status.currentTime > 0){
+	    			$("#jquery_jplayer_1").jPlayer("play", jpData.status.currentTime); //demarre la video ou elle a était arreté
+		    	}
+		    	else{
+		    		$("#jquery_jplayer_1").jPlayer("play", debut); // demarre la video du debut (int debut de la video en s)
+		    	}
+	    	}
+	    	else{
+	    		$("#jquery_jplayer_1").jPlayer("play", debut);  // demarre la video du debut (int debut de la video en s)
+	    	}
+	    	play = true; // la video est en cours
+	    	//imprimer_bloc("miniature","jp_container_1");
+	    });
+
+///////////////////////////////stop la vidéo////////////////////////////////////////////////
+
+	    $(".jp-stop").click( function() {  //clique sur le bouton pause
+	    	play = false; // la video est en pause
+	     	$("#jquery_jplayer_1").jPlayer("pause", jpData.status.currentTime); //ammène le curseur a l'endroit ou a était arreté la vidéo
+	    });
+
+///////////////////////////////active/desactive le repeat////////////////////////////////////////////////
+
+	    $(".jp-repeat").click(function(){
+	    	if(repeat == false){
+	    		repeat = true;
+	    	}
+	    	else if(repeat == true){
+	    		repeat = false;
+	    	}
+	    });
+
+///////////////////////////////clique gauche sur la timeline////////////////////////////////////////////////
+
+	    $("#progressBar").click( function(event){	// clique sur la barre de progression
+	    	var x = document.getElementById("progressBar"); 
+	    	var marginLeft = document.getElementsByClassName("container");
+	    	var marginLeftSecond = document.getElementsByClassName("col-6");
+
+	    	console.log(marginLeftSecond[0].offsetLeft);
+	    	//console.log("decalage gauche : " + x.offsetLeft);
+	    	var start = ((event.clientX - (parseInt($('.container').css('padding-left').slice(0, 2)) + marginLeftSecond[0].offsetLeft)) / x.offsetWidth); // event.clientX => abscisse de la souris || offsetwidth => taille de la barre de progression | calcul pourcentage de la video pour la barre de progression
+	    	if(play == true){ 
+	    		$("#jquery_jplayer_1").jPlayer("play", start * max + debut); // si la video est en cours la lancer ou le clique a était éffectué
+	    	}
+	    	else{
+	    		$("#jquery_jplayer_1").jPlayer("pause", start * max + debut); // si la vidéo est en pause mettre le curseur de la vidéo ou le clique a était éffectué
+	    	}
+	    });
+
+///////////////////////////////clique droit sur la timeline////////////////////////////////////////////////
+
+	    $("#progressBar").contextmenu(function(event){
+	    	var x = document.getElementById("progressBar"); 
+	    	//console.log("decalage gauche : " + x.offsetLeft);
+	    	var start = ((event.clientX - (event.clientX - event.offsetX)) / x.offsetWidth); // event.clientX => abscisse de la souris || offsetwidth => taille de la barre de progression | calcul pourcentage de la video pour la barre de progression
+	    	if(play == true){ 
+	    		$("#jquery_jplayer_1").jPlayer("play", start * max + debut); // si la video est en cours la lancer ou le clique a était éffectué
+	    	}
+	    	else{
+	    		$("#jquery_jplayer_1").jPlayer("pause", start * max + debut); // si la vidéo est en pause mettre le curseur de la vidéo ou le clique a était éffectué
+	    	}
+	    });
+		
+///////////////////////////////Retour menu videos////////////////////////////////////////////////
+
+		$(".retour").click(function(event){
+			document.location.href="../videos/";
+		});
+
+///////////////////////////////miniature/////////////////////////////////////////////////////////////
+
+		$("#screen").click(function(event){
+			// Get handles on the video and canvas elements
+
+			w = 640 / 2;
+
+			h = 360 / 2;
+
+			canvas.width = w;
+			canvas.height = h;	
+			snap();
+		});
+
+///////////////////////////////Calcul timeLine //////////////////////////////////////////////////////
+
+		setInterval(function() {
+			if ((jpData.status.currentTime > fin || jpData.status.currentTime < debut) && jpData.status.currentTime != 0) {
+				if(repeat == true){
+					$("#jquery_jplayer_1").jPlayer("play",debut);
+				}
+				else{
+					jp.jPlayer('stop'); // si le temps de la vidéo est supérieur a la fin ou le début de la séquence celle si s'arrete
+				}
+			}
+
+			if(jpData.status.currentTime != 0){
+				var x = document.getElementById("indicator");
+			   	if((((jpData.status.currentTime - debut) / max)* 100) > 100){ // si la séquence est fini stopper la barre de progression a 100%
+			   		x.style.width = "100%";
+			   		if(repeat == false){
+						play = false;
+			   		}	   		
+			   	}
+			   	else{  //sinon augementer la barre de progression
+			   		x.style.width = ((jpData.status.currentTime - debut) / max)* 100 + "%";
+			   	}
+
+			   	var HTML = "";
+			   	if(max >= 60){
+			   		var total = Math.trunc(jpData.status.currentTime - debut);
+			   		if(total >= 60){
+			   			var nbreMinutes = Math.trunc(total / 60);
+			   			HTML += nbreMinutes + ":";
+			   			total -= (nbreMinutes * 60);
+			   		}
+			   		else{
+			   			HTML += "0:";
+			   		}
+			   		if(total > 10){
+			   			HTML += total;
+			   		}
+			   		else{
+			   			HTML += "0" + total;
+			   		}
+			   		$("#jp-current-time").html(HTML);
+			   		HTML = "";
+			   		total = max - Math.trunc(jpData.status.currentTime - debut);
+
+			   		if(total >= 60){
+			   			nbreMinutes = Math.trunc(total / 60);
+			   			HTML += nbreMinutes + ":";
+			   			total -= (nbreMinutes * 60);
+			   		}
+			   		else{
+			   			HTML += "0:";
+			   		}
+			   		if(total >= 10){
+			   			HTML += total;
+			   		}
+			   		else{
+			   			HTML += "0" + total;
+			   		}
+			   		$("#jp-duration").html(HTML); 
+			   	}
+			   	else{
+			   		HTML += "0:";
+			   		if((Math.round(jpData.status.currentTime - debut)) >= 10){
+			   			HTML += Math.round(jpData.status.currentTime - debut);
+			   		}
+			   		else{
+			   			HTML += "0" + Math.round(jpData.status.currentTime - debut);
+			   		}
+			   		$("#jp-current-time").html(HTML);
+
+			   		HTML = "0:";
+
+			   		if((max - Math.round(jpData.status.currentTime - debut)) >= 10 ){
+			   			HTML += (max - Math.round(jpData.status.currentTime - debut));
+			   		}
+			   		else{
+			   			HTML += "0" + (max - Math.round(jpData.status.currentTime - debut));
+			   		}
+			   		$("#jp-duration").html(HTML);  		
+			   	}	   	
+			}
+			   
+		},500); 
+	});
+  	</script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="col-6 offset-2">
+
+        <div id="config_val_face"></div>
+        <div id="jp_container_1" class="jp-video jp-video-360p" role="application" aria-label="media player">
+
+            <div class="jp-type-single">
+                <div class="jp-details">
+                </div>
+                <div id="jquery_jplayer_1" class="jp-jplayer">
+
+                </div>
+                <div class="jp-gui">
+                    <div class="jp-interface">
+                        <div id="invisible" class="jp-current-time" role="timer" aria-label="time"></div>
+                        <div id="invisible" class="jp-duration" role="timer" aria-lable="time"></div>
+
+                        <div id="progressBar">
+
+                        </div>
+
+
+                        <div class="duree">
+                            <div id="jp-current-time" role="timer" aria-label="time">&nbsp;
+                            </div>
+                            <div id="jp-duration" role="timer" aria-label="duration">&nbsp;
+                            </div>
+                        </div>
+                        <div class="jp-controls-holder">
+                            <div class="jp-volume-controls">
+                                <button class="jp-mute" role="button" tabindex="0">mute</button>
+                                <button class="jp-volume-max" role="button" tabindex="0">max volume</button>
+                                <div class="jp-volume-bar">
+                                    <div class="jp-volume-bar-value">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="jp-controls">
+                                <button id="play" class="jp-play" role="button" tabindex="0">play</button>
+                                <button class="jp-stop" role="button" tabindex="0">stop</button>
+                            </div>
+                            <div class="jp-toggles">
+                                <button class="jp-repeat" role="button" tabindex="0">repeat</button>
+                                <button class="jp-full-screen" role="button" tabindex="0">full screen</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- début form -->
+                    <form id="leForm"  class="form-group row" autocomplete="off" name="createSequence" method="POST" action='{{path_for("PostVideo")}}'>
+						<div class="form-group col-12">
+							<button type="button" class="retour btn btn-secondary col-5 ml-5">Menu vidéo</button>
+							<button  type="button" class="sequence btn btn-primary col-5">Ajouter la séquence</button>
+						</div>
+						<div class="form-group col-12">
+							<div class="form-inline m-auto">
+								 <div class="col-4 m-auto">
+									<input class="btn btn-secondary" type="button" id="start" value="Début" disabled="disabled">
+									<input class="form-control col-5" type="text" id="timeStart" disabled="disabled" name="start">
+								 </div>
+								<div class="col-4 m-auto">
+									<input class="btn btn-secondary" type="button" id="finish" value="Fin" disabled="disabled">
+									<input class="form-control col-5" type="text" id="timeFinish" disabled="disabled" name="finish">
+								</div>
+							</div>
+
+						</div>
+						<div class="form-group col-12 ml-5">
+							<input class="col-3" type="text" list="lesObjets" id="objet" name="objet">
+							<datalist id="lesObjets"></datalist>
+							<input class="col-3" type="text" list="lesMethods" id="method" name="method">
+							<datalist id="lesMethods"></datalist>
+							<input class="col-3" type="text" list="lesParams" id="parametre" name="param" disabled="disabled">
+							<datalist id="lesParams"></datalist>
+						</div>
+						<div class="col-12 form-inline">
+							<div class="col-2 ml-5">
+								<input class="btn btn-outline-secondary" type="button" id="screen" value="miniature">
+							</div>
+							<div class="col-4 ml-5">
+								<canvas id="canvas" class="border border-primary"></canvas>
+							</div>
+
+						</div>
+
+						<input type="hidden" id="miniature" name="miniature">
+						<input type="hidden" id="miniature" name="idVideo" value="{{idVideo}}">
+
+                    </form>	<!-- fin form -->
+
+    </div>
+
+		</div>
+
+		<div class="jp-no-solution">
+			<span>Update Required</span>
+			To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+		</div>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "templates/app.twig" %}
+{% block content %}
+<div class="row m-auto col-6">
+	<h4>
+		{% if type == "objet" %}
+			Nouvel objet
+		{% elseif type == "method" %}
+			Nouvelle fonction
+		{% endif %}
+	</h4>
+	<form method="POST" action="{{ path_for('dictionary.create') }}?type={{ type }}">
+		<div class="form-group card">
+			<div class="card-body">
+				<div class="form-group row">
+					<label class="col-6 col-form-label">Nom de l'élément</label>
+					<div class="col-6">
+						<input class="form-control" type="text" name="libelle" value="{{ old.libelle }}">
+						{% if errors.libelle %}
+							<span class="erreur">{{ errors.libelle | first }}</span>
+						{% endif %}
+					</div>
+				</div>
+				{% if type == "method" %}
+					<div class="form-group row">
+						<label class="col-6 col-form-label">Paramètre</label>
+						<div class="col-6">
+							<input class="form-control" type="text" name="parametre" value="{{ old.parametre }}">
+							{% if errors.parametre %}
+								<span class="erreur">{{ errors.parametre | first }}</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endif %}	
+				<input class="btn btn-primary" type="submit" name="submit" value="Ajouter">
+			</div>
+		</div>
+		{{ csrf.field | raw }}
+	</form>
+</div>
+{% endblock %}

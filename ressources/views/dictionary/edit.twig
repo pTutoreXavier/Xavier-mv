@@ -1,0 +1,35 @@
+{% extends "templates/app.twig" %}
+{% block content %}
+<div class="row m-auto col-6">
+	<h4>Modification</h4>
+	<form method="POST" action="{{ path_for('dictionary.edit', {'id': element.id}) }}?type={{ element.type }}">
+		<div class="form-group card">
+			<div class="card-body">
+				<div class="form-group row">
+					<label class="col-6 col-form-label">Nom de l'élément</label>
+					<div class="col-6">
+						<input class="form-control" type="text" name="libelle" value="{{ element.libelle }}">
+						{% if errors.libelle %}
+							<span class="erreur">{{ errors.libelle | first }}</span>
+						{% endif %}
+					</div>
+				</div>
+				{% if element.type == "method" %}
+					<div class="form-group row">
+						<label class="col-6 col-form-label">Paramètre</label>
+						<div class="col-6">
+							<input class="form-control" type="text" name="parametre" value="{{ element.parametre }}">
+							{% if errors.parametre %}
+								<span class="erreur">{{ errors.parametre | first }}</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endif %}	
+				<input type="hidden" name="_METHOD" value="PUT">
+				<input class="btn btn-primary" type="submit" name="submit" value="Modifier">
+			</div>
+		</div>
+		{{ csrf.field | raw }}
+	</form>
+</div>
+{% endblock %}

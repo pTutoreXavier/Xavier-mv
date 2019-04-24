@@ -1,0 +1,23 @@
+/*
+$cols: dans une grille de x colonnes
+*/
+@mixin grille($cols, $size_gutter, $offset, $nb_cellules){
+	$gutters: $cols + 1;
+	$bloc: ((100% - ($gutters * $size_gutter)) / $cols);
+	width: ($bloc * $nb_cellules) + ($size_gutter * ($nb_cellules - 1));
+	margin-left: ($bloc * $offset) + ($size_gutter * ($offset + 1)); 
+}
+
+%row{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	box-sizing: border-box;
+}
+	/*
+	.col{
+		margin-left: $size_gutter;
+		margin-bottom: 5px;
+		box-sizing: border-box;
+	}*/

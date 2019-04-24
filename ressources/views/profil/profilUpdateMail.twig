@@ -1,0 +1,11 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+
+<form method="POST" action="{{ path_for('checkMail') }}" id="formUpdateMail">
+	<h2>Changement d'adresse email</h2>
+	<span>Nouvelle adresse mail : </span><input class="inputProfiltext" type="mail" id="mail" name="mail" required="required">
+	<span>Confirmer l'adresse mail : </span><input class="inputProfiltext" type="mail" id="mail2" name="mail2" required="required">
+	<input class="inputProfilSubmit" type="submit" name='valide' value="valider">
+</form>
+
+{% endblock %}
