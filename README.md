@@ -15,7 +15,7 @@ Afficher les machines docker avec:
 ```
 docker ps -a
 ```
-Dans la machine xavier, exécuter:
+Dans la machine xavier-mv-master_application, exécuter:
 ```
 composer install
 composer dump-autoload -o
