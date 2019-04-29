@@ -3,11 +3,11 @@ Groupe : Mailard Louis, Toussaint Yvann, Costa Adrien, Guebel Marc
 
 ### Pré-requis
 
-Avoir docker et docker-compose
+Avoir docker, docker-compose et composer
 
 ### Installation
 
-Après avoir récupérer le dépot Git, se placer à la racine, ouvrir un terminal et exécuter la commande: 
+Après avoir récupérer le dépot Git, se placer à la racine, ouvrir un terminal et exécuter la commande:
 ```
 docker-compose up -d
 ```
