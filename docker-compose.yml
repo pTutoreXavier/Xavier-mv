@@ -8,7 +8,7 @@ networks:
     driver: bridge
 
 services:
-  api.player:
+  application:
     image: canals/php:latest
     environment:
       - VHOST_HOSTNAME=xavier.local
