@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `xv_user` (
 /*!40000 ALTER TABLE `xv_user` DISABLE KEYS */;
 INSERT INTO `xv_user` (`id`, `nom`, `prenom`, `mail`, `dateNaissance`, `mdp`, `level`, `updated_at`, `created_at`, `avatar`) VALUES
 	(1, 'Sear', 'Cher', 'cher@cheur.fr', '1987-03-15', '$2y$10$7xn.CZ5THhXYB9ud5dmzGeb0izK6V0z.Oh5ORyMGebtvu0jXD04B2', 779, '2019-03-27 11:22:16', '2019-03-27 11:22:16', '0.png'),
-	(2, 'Us', 'Er', 'us@er.fr', '1997-03-15', '$2y$10$0vmJ9qbSZvaKHJvrNj2cdOoT1Kiskgcaf..pT2Sn245N/JAtH0t.O', 500, '2019-03-27 11:23:49', '2019-03-27 11:23:49', '0.png'),
+	(2, 'Us', 'Er', 'us@er.fr', '1997-03-15', '$2y$10$0vmJ9qbSZvaKHJvrNj2cdOoT1Kiskgcaf..pT2Sn245N/JAtH0t.O', 500, '2019-03-27 11:23:49', '2019-03-27 11:23:49', '0.png');
 /*!40000 ALTER TABLE `xv_user` ENABLE KEYS */;
 
 -- Listage de la structure de la table xavier. xv_video
