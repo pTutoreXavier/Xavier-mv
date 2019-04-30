@@ -12,7 +12,7 @@ services:
     image: canals/php:latest
     environment:
       - VHOST_HOSTNAME=xavier.local
-      - VHOST_DOCROOT=/var/www/xavier
+      - VHOST_DOCROOT=/var/www/xavier/public
       #- http_proxy=http://www-cache.iutnc.univ-lorraine.fr:3128/
       #- https_proxy=http://www-cache.iutnc.univ-lorraine.fr:3128/
     ports:
