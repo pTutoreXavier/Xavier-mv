@@ -31,12 +31,10 @@ nano /etc/hosts
 ```
 et ajouter: 127.0.0.1 xavier.local
 
+## Utilisation
+
 Dans un navigateur:
 
 localhost:8080 pour accéder à la base de données et pour importer le sql
 
 xavier.local:10080 (port par défaut) pour accéder à l'application
-
-## Utilisation
-
-L'application est accessible avec l'url: xavier.local (port 10080 par défaut)
